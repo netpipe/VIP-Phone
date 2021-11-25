@@ -65,7 +65,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
         Messenger msgr(ui->lineEdit->text().toLatin1());
-             QSound::play( mediadir + "sounds/ec2_mono.ogg");
+             QSound::play( mediadir.toLatin1() + "sounds/ec2_mono.ogg");
 
 #ifdef FTP
     if (adminftp==0){
@@ -119,4 +119,42 @@ void MainWindow::on_actionexit_triggered()
 //    db.close();
 
 //}
+
+
+//QUdpSocket udp;
+//QByteArray buffer;
+//buffer.resize(udp.pendingDatagramSize());
+//QHostAddress sender;
+//qint16 senderPort;
+//udp.readDatagram(buffer.data(), buffer.size());
+//qDebug() << buffer;
+
+//QUdpSocket udpSocket;
+////https://stackoverflow.com/questions/41662338/send-a-file-over-sockets-qt
+//void initUdp() {
+//    udpSocket = new QUdpSocket(this);
+//    udpSocket->bind(udpPort, QUdpSocket::ShareAddress);
+//    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processUdpData()));
+//}
+
+//void processUdpData() {
+//     while (udpSocket->hasPendingDatagrams()) {
+//          QByteArray buffer;
+//          buffer.resize(udpSocket->pendingDatagramSize());
+//          udpSocket->readDatagram(buffer.data(), buffer.size());
+//          qDebug() << buffer;
+//     }
+//}
+
+
+
+//QFile file("/Users/mathieu/Documents/test.wav");
+//if(!file.exists()) qDebug() << "not found file";
+//file.open(QIODevice::ReadWrite);
+//QByteArray data;
+//data.append(file.readAll());
+//file.close();
+//QUdpSocket udpsock;
+//udpsock.writeDatagram(data, QHostAddress::Any, 1441);
+
 

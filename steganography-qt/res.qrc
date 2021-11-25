@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>dog.jpg</file>
+        <file>kompas_128.png</file>
+        <file>kompas_256.png</file>
+        <file>kompas.png</file>
+        <file alias="kompas23.jpg">kompas25.jpg</file>
+        <file>kompas50.jpg</file>
+        <file>kompas90.jpg</file>
+    </qresource>
+</RCC>
