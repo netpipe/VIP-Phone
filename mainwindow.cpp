@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //  QTime time = QTime::currentTime();
 // QString text = time.toString("hh:mm");
 
-
+//on_start();
 
 }
 
@@ -297,3 +297,9 @@ void MainWindow::on_cmbTheme_currentIndexChanged(const QString &arg1)
 }
 
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    on_start();
+}
+

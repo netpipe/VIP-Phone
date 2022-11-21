@@ -32,6 +32,10 @@ public:
     bool loaded=false;
     QTcpServer m_server;
     bool on_check_connectlist(QString connected_ip);
+int adminftp=0;
+#ifdef SOUND
+    QMediaPlayer* player;
+#endif
 private slots:
     void on_actionexit_triggered();
     void on_show_detail(QListWidgetItem*);
@@ -44,6 +48,8 @@ private slots:
     void on_cmbTheme_currentIndexChanged(const QString &arg1);
     void onconnected();
     void onconnectfromclient();
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString mediadir;

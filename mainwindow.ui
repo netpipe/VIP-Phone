@@ -323,6 +323,19 @@
          <string>UDP mode only</string>
         </property>
        </widget>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>80</y>
+          <width>97</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>startftp</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
