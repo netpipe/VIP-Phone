@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-  QTimer *timerClock = new QTimer(this);
+ // QTimer *timerClock = new QTimer(this);
 //call log system
 //  QDate dNow(QDate::currentDate());
 //  qDebug() << "Today is" << dNow.toString("dd.MM.yyyy");
