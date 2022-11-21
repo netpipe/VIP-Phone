@@ -4,10 +4,14 @@
 #include <QHostAddress>
 #include <QSound>
 #include <QDebug>
-#include <QTimer>
-#include <downloadmanager.h>
 #include <QSettings>
 #include <QSystemTrayIcon>
+#include <QListWidget>
+#include <QMessageBox>
+#include <QDebug>
+#include <QColorDialog>
+#include <QDirIterator>
+#include <QTextCodec>
 
 #ifdef FTP
 #include "ftp-server/ftpgui.h"
@@ -15,58 +19,158 @@
     FTPGUI *ftpgui;
 #endif
 
+
+#define server_port 30011
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    tray_con();
+    init_connect();
+    on_connect_db();
+ //   msgr.vso->startListen(server_port);
+
+    QDirIterator it("./Resource/themes/", QStringList() << "*.qss", QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()){
+      //  QFileInfo fileInfo(f.fileName());
+        ui->cmbTheme->addItem(it.next().toLatin1());
+    }
 
 
-    QString mediadir = "./Resource/";
-    QPixmap oPixmap(32,32);
-    oPixmap.load ( mediadir + "phone.png");
-       QIcon oIcon( oPixmap );
-    trayIcon = new QSystemTrayIcon(oIcon);
+    QFile MyFile("themes.txt");
+    if(MyFile.exists()){
+        MyFile.open(QIODevice::ReadWrite);
+        QTextStream in (&MyFile);
+        QString line;
+        QStringList list;
+         //   QList<QString> nums;
+        QStringList nums;
+        QRegExp rx("[:]");
+        line = in.readLine();
+  QString stylesheet;
+        if (line.contains(":")) {
+            list = line.split(rx);
+                qDebug() << "theme" <<  list.at(1).toLatin1();
+                stylesheet =  list.at(1).toLatin1();
+          loadStyleSheet( list.at(1).toLatin1());
 
-    QAction *quit_action = new QAction( "Exit", trayIcon );
-    connect( quit_action, SIGNAL(triggered()), this, SLOT(on_exit()) );
+                MyFile.close();
+        }
 
-    trayIconMenu = new QMenu(this);
-    trayIconMenu->addAction( quit_action );
+  fileName=stylesheet;
+        QFile file(stylesheet);
 
-    trayIcon->setContextMenu( trayIconMenu);
-    trayIcon->setVisible(true);
+        file.open(QIODevice::Text | QIODevice::ReadOnly);
+        QString content;
+        while(!file.atEnd())
+            content.append(file.readLine());
+    }
+  loaded=true;
 
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+
+
+  QTimer *timerClock = new QTimer(this);
+//call log system
+//  QDate dNow(QDate::currentDate());
+//  qDebug() << "Today is" << dNow.toString("dd.MM.yyyy");
+
+//  QTime time = QTime::currentTime();
+// QString text = time.toString("hh:mm");
 
 
 
-        QTimer *timerClock = new QTimer(this);
-    //call log system
-  //  QDate dNow(QDate::currentDate());
-  //  qDebug() << "Today is" << dNow.toString("dd.MM.yyyy");
-
-  //  QTime time = QTime::currentTime();
-  // QString text = time.toString("hh:mm");
 }
-
-//void MainWindow::showMessage()
-//{
-//    QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon();
-//    trayIcon->showMessage(tr("MeatTracker"), tr("Meat Timer..."), icon, 100);
-//}
-
 
 MainWindow::~MainWindow()
 {
+    m_db.close();
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::tray_con()
 {
-        Messenger msgr(ui->lineEdit->text().toLatin1());
-             QSound::play( mediadir.toLatin1() + "sounds/ec2_mono.ogg");
+    QString mediadir = "./Resource/";
+    QPixmap oPixmap(32,32);
+    oPixmap.load ( mediadir + "phone.png");
+    QIcon oIcon( oPixmap );
+    trayIcon = new QSystemTrayIcon(oIcon);
+    quit_action = new QAction( "Exit", trayIcon );
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction( quit_action );
+    trayIcon->setContextMenu( trayIconMenu);
+    trayIcon->setVisible(true);
+}
 
+void MainWindow::init_connect()
+{
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+    connect(ui->m_ips, SIGNAL(itemClicked(QListWidgetItem* )), this, SLOT(on_show_detail(QListWidgetItem* )));
+    connect(ui->m_pitch, SIGNAL(valueChanged(int)), this, SLOT(on_pitch_changed(int)));
+    connect( quit_action, SIGNAL(triggered()), this, SLOT(on_exit()) );
+    connect(&m_server, SIGNAL(newConnection()), this, SLOT(onconnectfromclient()));
+}
+
+void MainWindow::on_pitch_changed(int val)
+{
+    msgr.vso->pitch_val = val;
+}
+
+void MainWindow::on_show_detail(QListWidgetItem* ip_item)
+{
+    QString str = QString("SELECT * FROM user_chat WHERE user_chat.user_ip = '%1';").arg(ip_item->text());
+    QSqlQuery query_detail(str);
+    while (query_detail.next())
+    {
+        ui->m_name->setText(query_detail.value(2).toString());
+        ui->m_phone->setText(query_detail.value(3).toString());
+        ui->m_addr->setText(query_detail.value(4).toString());
+        ui->m_extra->setText(query_detail.value(5).toString());
+        ui->m_cur_ip->setText(ip_item->text());
+    }
+    msgr.set_host(ui->m_cur_ip->text().toLatin1());
+    QTcpSocket* m_client_soc = new QTcpSocket;
+    m_client_soc->connectToHost(ip_item->text(),server_port+1);
+    connect(m_client_soc, SIGNAL(connected()), this, SLOT(onconnected()));
+    on_start();
+}
+
+void MainWindow::onconnectfromclient()
+{
+    QTcpSocket* client_sock = m_server.nextPendingConnection();
+    QString client_ip = client_sock->peerAddress().toString();
+    client_ip = client_ip.right(client_ip.length() - client_ip.indexOf(":",3)-1);
+    if(on_check_connectlist(client_ip))
+    {
+        ui->m_connectedip->addItem(client_ip);
+    }
+}
+
+void MainWindow::onconnected()
+{
+    QString con_ip = ui->m_cur_ip->text();
+    if(on_check_connectlist(con_ip))
+    {
+        ui->m_connectedip->addItem(con_ip);
+    }
+}
+
+bool MainWindow::on_check_connectlist(QString connected_ip)
+{
+    for(int i = 0; i < ui->m_connectedip->count(); i++)
+    {
+        if(ui->m_connectedip->item(i)->text() == connected_ip)
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void MainWindow::on_start()
+{
+        QSound::play( mediadir.toLatin1() + "sounds/ec2_mono.ogg");
 #ifdef FTP
     if (adminftp==0){
     ftpgui = new FTPGUI;
@@ -74,7 +178,6 @@ void MainWindow::on_pushButton_clicked()
     }
     if (adminftp) { ftpgui->show();}
 #endif
-
 }
 
 void MainWindow::on_actionexit_triggered()
@@ -82,79 +185,115 @@ void MainWindow::on_actionexit_triggered()
     QApplication::exit();
 }
 
-//void MainWindow::createNewsTable(){
+void MainWindow::on_connect_db()
+{
+    m_db.close();
+    ui->m_ips->clear();
+    ui->m_addr->clear();
+    ui->m_extra->clear();
+    ui->m_phone->clear();
+    ui->m_name->clear();
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName("./voice_user.db");
 
-//    db.setDatabaseName("./news.sqlite");
+    if(m_db.open()) {
+        qDebug()<<"Successful database connection";
+    }
+    else {
+        qDebug()<<"Error: failed database connection";
+    }
 
-//    if(db.open())    {       qDebug()<<"Successful database connection";    }
-//    else    {       qDebug()<<"Error: failed database connection";    }
+    QSqlQuery query("SELECT * FROM user_chat;");
 
-//    QString query;
+    while (query.next())
+    {
+        ui->m_ips->addItem(query.value(1).toString());
+    }
+}
 
-//   // qDebug() << "test" << eownerID.toLatin1();
+void MainWindow::on_btn_save_clicked()
+{
+    QString add_ip = ui->m_cur_ip->text();
+    for(int i=0; i<ui->m_ips->count(); i++){
+        if( ui->m_ips->item(i)->text() == add_ip){
+            int a = QMessageBox::information(this, "InFo", "Already exist!\n Update data of " + add_ip + " ?", QMessageBox::Ok,QMessageBox::Cancel);
+            if(a == QMessageBox::Ok){
+                QString update_str = QString("UPDATE user_chat SET Name = '%1' , Phone = '%2' , address = '%3' , extra = '%4' WHERE user_ip = '%5';").arg(ui->m_name->text()).arg(ui->m_phone->text()).arg(ui->m_addr->text()).arg(ui->m_extra->toPlainText()).arg(add_ip);
+                QSqlQuery record_up(update_str);
+                on_connect_db();
+                return ;
+            } else {
+                return;
+            }
+        }
+    }
 
-//    query.append("CREATE TABLE IF NOT EXISTS news("
-//                    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                    "origindex VARCHAR(100)," //rcoins index then coins.sqlite is stored on usbdrive as part of key/verify
-//                    "addr VARCHAR(100),"
-//                    "datetime INTEGER,"
-//                    "class INTEGER,"
-//                    "hold INTEGER"
-//                    ");");
+    int b = QMessageBox::information(this, "InFo", "Insert data of " + add_ip + " ?",  QMessageBox::Ok,QMessageBox::Cancel);
+    if (b == QMessageBox::Ok){
+        QString insert_str = QString("INSERT INTO user_chat(user_ip) VALUES ( '%1' );").arg(add_ip);
+        QSqlQuery insert_query(insert_str);
+        on_connect_db();
+    }
+}
 
+void MainWindow::on_btn_remove_clicked()
+{
+    QString del_ip = ui->m_ips->currentItem()->text();
+    int b = QMessageBox::information(this, "InFo", "Delete data of " + del_ip + " ?",  QMessageBox::Ok,QMessageBox::Cancel);
+    if (b == QMessageBox::Ok){
+        QString del_str = QString("DELETE FROM user_chat WHERE user_ip = '%1';").arg(del_ip);
+        QSqlQuery del_query(del_str);
+        on_connect_db();
+    }
+}
 
-//    QSqlQuery create;
-//    create.prepare(query);
+void MainWindow::on_serverbtn_clicked()
+{
+    msgr.vso->startListen(server_port);
+    m_server.listen(QHostAddress::Any, server_port+1);
+}
 
-//    if (create.exec())
-//    {
-//        qDebug()<<"Table exists or has been created";
-//    }
-//    else
-//    {
-//        qDebug()<<"Table not exists or has not been created";
-//  //      qDebug()<<"ERROR! "<< create.lastError();
-//    }
-//    query.clear();
-//    db.close();
+void MainWindow::loadStyleSheet( QString sheet_name)
+{
+    QFile file(sheet_name);
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
 
-//}
+    qApp->setStyleSheet(styleSheet);
+}
 
+void MainWindow::on_cmbTheme_currentIndexChanged(const QString &arg1)
+{
+    if (loaded==true)
+    {
+    fileName=ui->cmbTheme->currentText();
+    QFile file(fileName);
 
-//QUdpSocket udp;
-//QByteArray buffer;
-//buffer.resize(udp.pendingDatagramSize());
-//QHostAddress sender;
-//qint16 senderPort;
-//udp.readDatagram(buffer.data(), buffer.size());
-//qDebug() << buffer;
+    file.open(QIODevice::Text | QIODevice::ReadOnly);
+    QString content;
+    while(!file.atEnd())
+        content.append(file.readLine());
+    file.close();
 
-//QUdpSocket udpSocket;
-////https://stackoverflow.com/questions/41662338/send-a-file-over-sockets-qt
-//void initUdp() {
-//    udpSocket = new QUdpSocket(this);
-//    udpSocket->bind(udpPort, QUdpSocket::ShareAddress);
-//    connect(udpSocket, SIGNAL(readyRead()), this, SLOT(processUdpData()));
-//}
+    loadStyleSheet(ui->cmbTheme->currentText());
 
-//void processUdpData() {
-//     while (udpSocket->hasPendingDatagrams()) {
-//          QByteArray buffer;
-//          buffer.resize(udpSocket->pendingDatagramSize());
-//          udpSocket->readDatagram(buffer.data(), buffer.size());
-//          qDebug() << buffer;
-//     }
-//}
+    QFile file2("themes.txt");
+        if(file2.open(QIODevice::ReadWrite | QIODevice::Text))// QIODevice::Append |
+        {
+                QTextStream stream(&file2);
+                file2.seek(0);
+               stream << "theme:" << ui->cmbTheme->currentText().toLatin1()<< endl;
+                for (int i = 0; i < ui->cmbTheme->count(); i++)
+                {
+                 stream << "theme:" << ui->cmbTheme->itemText(i) << endl;
+                }
+            //                file.write("\n");
+               file2.close();
+        }
 
+    if (ui->cmbTheme->currentText().toLatin1() != ""){
+      //   ui->cmbTheme->currentText().toLatin1();
+    }
+}
 
-
-//QFile file("/Users/mathieu/Documents/test.wav");
-//if(!file.exists()) qDebug() << "not found file";
-//file.open(QIODevice::ReadWrite);
-//QByteArray data;
-//data.append(file.readAll());
-//file.close();
-//QUdpSocket udpsock;
-//udpsock.writeDatagram(data, QHostAddress::Any, 1441);
-
-
+}

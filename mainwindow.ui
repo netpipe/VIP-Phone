@@ -6,202 +6,335 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>744</width>
-    <height>460</height>
+    <width>718</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>20</y>
-      <width>248</width>
-      <height>205</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Voice Over IP</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>IP</string>
-       </property>
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>not designed for use with huds or voice recognition software mainly leftover ai's inside space suit huds</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Contacts</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Contacts</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0" rowspan="4" colspan="2">
+            <widget class="QListWidget" name="m_ips"/>
+           </item>
+           <item row="3" column="2" colspan="2">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>Extra</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2" colspan="2">
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Address/IP</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="5">
+            <widget class="QLabel" name="label_20">
+             <property name="text">
+              <string>List of connected client</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2" colspan="2">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Phone</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="5" rowspan="3">
+            <widget class="QListWidget" name="m_connectedip"/>
+           </item>
+           <item row="1" column="4">
+            <widget class="QLineEdit" name="m_phone"/>
+           </item>
+           <item row="2" column="4">
+            <widget class="QLineEdit" name="m_addr"/>
+           </item>
+           <item row="0" column="2" colspan="2">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="4">
+            <widget class="QLineEdit" name="m_name"/>
+           </item>
+           <item row="3" column="4">
+            <widget class="QTextEdit" name="m_extra"/>
+           </item>
+           <item row="4" column="4">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QPushButton" name="btn_save">
+               <property name="text">
+                <string>save</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_remove">
+               <property name="text">
+                <string>remove</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="4" column="5">
+            <widget class="QPushButton" name="serverbtn">
+             <property name="text">
+              <string>Start Server</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit">
-       <property name="text">
-        <string>192.168.0.1</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="lineEdit_3">
-       <property name="text">
-        <string>password</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_2">
-       <property name="text">
-        <string>420</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Port</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="comboBox">
-       <item>
-        <property name="text">
-         <string>ssl</string>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Config</string>
+       </attribute>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>248</width>
+          <height>205</height>
+         </rect>
         </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>simple</string>
+        <property name="title">
+         <string>Voice Over IP</string>
         </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>rsa</string>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Port</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="m_cur_ip">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEdit_2">
+           <property name="text">
+            <string>420</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>IP</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="lineEdit_3">
+           <property name="text">
+            <string>password</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="comboBox">
+           <item>
+            <property name="text">
+             <string>ssl</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>simple</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>rsa</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>xor</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Encryption</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>key</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>240</y>
+          <width>111</width>
+          <height>17</height>
+         </rect>
         </property>
-       </item>
-       <item>
         <property name="text">
-         <string>xor</string>
+         <string>pitch shifting</string>
         </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Encryption</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>key</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>Connect</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>421</width>
-      <height>381</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Contacts</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0" rowspan="4" colspan="2">
-      <widget class="QListWidget" name="listWidget">
-       <item>
+       </widget>
+       <widget class="QSpinBox" name="m_pitch">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>230</y>
+          <width>48</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>-6</number>
+        </property>
+        <property name="maximum">
+         <number>6</number>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="cmbTheme">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>330</y>
+          <width>469</width>
+          <height>36</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="checkBox">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>280</y>
+          <width>131</width>
+          <height>22</height>
+         </rect>
+        </property>
         <property name="text">
-         <string>Localhost</string>
+         <string>Sweep pitch</string>
         </property>
-       </item>
+       </widget>
+       <widget class="QCheckBox" name="checkBox_2">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>310</y>
+          <width>131</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Roboto Voice</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="horizontalSlider">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>300</y>
+          <width>160</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QSlider" name="horizontalSlider_2">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>270</y>
+          <width>160</width>
+          <height>28</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="checkBox_3">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>320</y>
+          <width>131</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>UDP mode only</string>
+        </property>
+       </widget>
       </widget>
-     </item>
-     <item row="0" column="2" colspan="2">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Name</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QLineEdit" name="lineEdit_4"/>
-     </item>
-     <item row="1" column="2" colspan="2">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Phone</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QLineEdit" name="lineEdit_5"/>
-     </item>
-     <item row="2" column="2" colspan="2">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>address</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="4">
-      <widget class="QLineEdit" name="lineEdit_6"/>
-     </item>
-     <item row="3" column="2" colspan="2">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>extra</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="4">
-      <widget class="QTextEdit" name="textEdit"/>
-     </item>
-     <item row="4" column="0">
-      <widget class="QPushButton" name="addcontact">
-       <property name="text">
-        <string>add</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1" colspan="2">
-      <widget class="QPushButton" name="rmcontact">
-       <property name="text">
-        <string>remove</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3" colspan="2">
-      <widget class="QPushButton" name="editcontact">
-       <property name="text">
-        <string>edit</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>744</width>
-     <height>24</height>
+     <width>718</width>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMenu">

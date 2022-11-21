@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
-
-
+#include <QSplashScreen>
+#include <QFile>
 
 #include <QCommandLineParser>
 
@@ -10,6 +10,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setApplicationName("voice-over-lan");
     a.setApplicationVersion("0.1");
+
+    QPixmap m( "./Resource/logo.png");
 
     QCommandLineParser parser;
     parser.setApplicationDescription("Voice over LAN");
@@ -25,10 +27,17 @@ int main(int argc, char *argv[])
         address = parser.positionalArguments().at(0);
     }
 
+        MainWindow w;
+
+    QSplashScreen splash(m);
+    splash.show();
+
+    splash.finish(&w);
 
 
-    MainWindow w;
     w.show();
+
+
 
     return a.exec();
 }

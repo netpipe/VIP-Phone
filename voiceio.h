@@ -2,12 +2,23 @@
 #define VOICEIO_H
 
 #include <QIODevice>
+#include <QAudio>
+#include <QAudioInput>
+#include <QAudioOutput>
+#include <QDebug>
+#include <QBuffer>
 
 class VoiceIO : public QObject
 {
     Q_OBJECT
 public:
     explicit VoiceIO(QObject *parent = 0);
+
+    QAudioFormat        formatAudio;
+    QAudioInput*        m_audioInput;
+    QAudioOutput*       m_audioOutput;
+    QBuffer             m_audioOutputIODevice;
+    QByteArray          m_buffer;
 
 signals:
     void readVoice(QByteArray data);
