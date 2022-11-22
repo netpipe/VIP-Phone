@@ -36,6 +36,7 @@ int adminftp=0;
 #ifdef SOUND
     QMediaPlayer* player;
 #endif
+    void createUsersList();
     void onTimeout();
         QList <QTcpSocket*> client_list;
 private slots:
