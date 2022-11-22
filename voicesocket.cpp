@@ -47,7 +47,7 @@ void VoiceSocket::udp_readyRead()
 
 void VoiceSocket::process(QByteArray in, QByteArray& out)
 {
-#ifdef soundtouch2
+#ifdef soundtouch
     SoundTouch  pSoundTouch;
     pSoundTouch.setSampleRate(SampleRate);
     pSoundTouch.setChannels(ChannelCnt);

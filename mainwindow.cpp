@@ -12,6 +12,7 @@
 #include <QColorDialog>
 #include <QDirIterator>
 #include <QTextCodec>
+#include <QTimer>
 
 #ifdef FTP
 #include "ftp-server/ftpgui.h"
@@ -29,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     tray_con();
     init_connect();
+    QTimer m_timer;
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
+    m_timer.start(1000);
     on_connect_db();
  //   msgr.vso->startListen(server_port);
 
@@ -87,6 +91,25 @@ MainWindow::~MainWindow()
 {
     m_db.close();
     delete ui;
+}
+
+void MainWindow::onTimeout()
+{
+    for(int i = 0; i < client_list.count(); i++)
+    {
+        if(client_list.at(i)->state()){
+            QString dis_con_ip = client_list.at(i)->peerAddress().toString();
+            dis_con_ip = dis_con_ip.right(dis_con_ip.length() - dis_con_ip.indexOf(":",3)-1);
+            int del_num=0;
+            for(int j = 0; j < ui->m_connectedip->count(); j++){
+                if(ui->m_connectedip->item(j)->text() == dis_con_ip){
+                    ui->m_connectedip->removeItemWidget( ui->m_connectedip->item(j));
+                    client_list.removeAt(i);
+                    return ;
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::tray_con()
