@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     tray_con();
     init_connect();
+    createUsersList();
     QTimer m_timer;
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
     m_timer.start(1000);
@@ -300,4 +301,49 @@ void MainWindow::on_cmbTheme_currentIndexChanged(const QString &arg1)
     }
 }
 
+}
+
+
+
+void MainWindow::createUsersList()
+{
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName("./voice_user.db");
+
+        //db.setDatabaseName("avalableCoins.sqlite");
+    if(m_db.open())
+    {
+        qDebug()<<"Successful coin database connection";
+    }
+    else
+    {
+        qDebug()<<"Error: failed database connection";
+    }
+
+    QString query;
+    query.append("CREATE TABLE IF NOT EXISTS user_chat("
+                 "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                 "user_ip VARCHAR(50),"
+                 "Name VARCHAR(50),"
+                 "Phone VARCHAR(50),"
+                 "address VARCHAR(50),"
+                 "extra VARCHAR(50));");
+
+
+
+    QSqlQuery create;
+    create.prepare(query);
+
+    if (create.exec())
+    {
+        qDebug()<<"Table exists or has been created";
+    }
+    else
+    {
+        qDebug()<<"Table not exists or has not been created";
+    //    qDebug()<<"ERROR! "<< create.lastError();
+    }
+
+    query.clear();
+    m_db.close();
 }
