@@ -3,9 +3,12 @@
 
 #include <QObject>
 #include <QUdpSocket>
+
+#ifdef soundtouch
 #include <soundtouch/SoundTouch.h>
 
 using namespace soundtouch;
+#endif
 using namespace std;
 
 class VoiceSocket : public QObject
